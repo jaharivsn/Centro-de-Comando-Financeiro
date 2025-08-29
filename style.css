@@ -1,0 +1,41 @@
+body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: #111827; 
+}
+.card { 
+    background-color: #1F2937; 
+    border: 1px solid #374151; 
+    border-radius: 0.75rem; 
+}
+.btn-primary { 
+    background-color: #2563EB; 
+    transition: background-color 0.2s; 
+}
+.btn-primary:hover { 
+    background-color: #1D4ED8; 
+}
+.btn-secondary { 
+    background-color: #4B5563; 
+    transition: background-color 0.2s; 
+}
+.btn-secondary:hover { 
+    background-color: #374151; 
+}
+.btn-danger { 
+    background-color: #DC2626; 
+    transition: background-color: 0.2s; 
+}
+.btn-danger:hover { 
+    background-color: #B91C1C; 
+}
+.input-field { 
+    background-color: #374151; 
+    border-color: #4B5563; 
+}
+.modal-bg { 
+    background-color: rgba(0,0,0,0.7); 
+    backdrop-filter: blur(4px); 
+}
+.progress-bar-fill { 
+    transition: width 0.5s ease-in-out; 
+}

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Comando Financeiro v9 (PWA)</title>
+    
+    <meta name="theme-color" content="#1F2937"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Comando">
+    <meta name="application-name" content="Comando">
+
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="text-gray-200">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-white">Centro de Comando Financeiro</h1>
+            <p id="full-date-header" class="text-lg text-gray-400 mt-2">Carregando...</p>
+        </header>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="card p-4 text-center"><span class="text-sm text-gray-400">Saldo do Mês</span><p id="kpi-balance" class="text-2xl font-bold text-green-400">R$ 0,00</p></div>
+            <div class="card p-4 text-center"><span class="text-sm text-gray-400">Renda Mensal</span><p id="kpi-income" class="text-2xl font-bold">R$ 0,00</p></div>
+            <div class="card p-4 text-center"><span class="text-sm text-gray-400">Despesa Mensal</span><p id="kpi-expense" class="text-2xl font-bold text-red-400">R$ 0,00</p></div>
+            <div class="card p-4 text-center"><span class="text-sm text-gray-400">Dívida Total</span><p id="kpi-debt" class="text-2xl font-bold text-orange-400">R$ 0,00</p></div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Nova Transação</h2>
+                    <form id="transaction-form" class="space-y-4">
+                        <input type="text" id="trans-description" class="input-field w-full p-2 rounded" placeholder="Descrição (Ex: Freelance)" required>
+                        <div class="flex gap-2">
+                            <input type="number" id="trans-amount" class="input-field w-full p-2 rounded" placeholder="Valor" required step="0.01">
+                            <select id="trans-currency" class="input-field w-1/3 p-2 rounded">
+                                <option value="BRL">BRL</option>
+                                <option value="USD">USD</option>
+                                <option value="PEN">PEN</option>
+                            </select>
+                        </div>
+                        <select id="trans-category" class="input-field w-full p-2 rounded">
+                            <option>Trabalho</option><option>Alimentação</option><option>Moradia</option><option>Transporte</option><option>Lazer</option><option>Saúde</option><option>Educação</option><option>Outros</option>
+                        </select>
+                        <div class="flex gap-4">
+                            <button type="submit" data-type="income" class="w-full text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5">Receita</button>
+                            <button type="submit" data-type="expense" class="w-full text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5">Despesa</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Custos Fixos Mensais</h2>
+                     <ul id="fixed-expense-list" class="space-y-2 mb-4"></ul>
+                    <form id="add-fixed-expense-form" class="space-y-2">
+                         <input type="text" id="fixed-name" class="input-field w-full p-2 rounded text-sm" placeholder="Nome" required>
+                         <div class="grid grid-cols-2 gap-2">
+                             <input type="number" id="fixed-amount" class="input-field w-full p-2 rounded text-sm" placeholder="Valor" required step="0.01">
+                             <select id="fixed-method" class="input-field w-full p-2 rounded text-sm">
+                                 <option value="Crédito">Crédito</option>
+                                 <option value="Débito">Débito</option>
+                             </select>
+                         </div>
+                         <button type="submit" class="w-full btn-primary p-2 rounded-lg flex items-center justify-center gap-2 text-sm"><i data-lucide="plus" class="w-4 h-4"></i> Adicionar Custo Fixo</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Dívidas</h2>
+                    <ul id="debt-list" class="space-y-3 mb-4"></ul>
+                    <form id="add-debt-form" class="flex gap-2">
+                         <input type="text" id="debt-name" class="input-field w-full p-2 rounded text-sm" placeholder="Nome da Dívida" required>
+                         <input type="number" id="debt-total" class="input-field w-full p-2 rounded text-sm" placeholder="Valor Total" required step="0.01">
+                         <button type="submit" class="btn-primary p-2 rounded-lg"><i data-lucide="plus"></i></button>
+                    </form>
+                </div>
+                 <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Compras</h2>
+                     <div id="goal-list" class="space-y-4 mb-4"></div>
+                     <form id="add-goal-form" class="grid grid-cols-2 gap-2">
+                         <input type="text" id="goal-name" class="input-field col-span-2 w-full p-2 rounded text-sm" placeholder="Nome da Compra" required>
+                         <input type="number" id="goal-target" class="input-field w-full p-2 rounded text-sm" placeholder="Valor" required step="0.01">
+                         <select id="goal-category" class="input-field w-full p-2 rounded text-sm">
+                             <option>Equipamento</option><option>Glow Up</option><option>Casa</option><option>Lazer</option><option>Outros</option>
+                         </select>
+                         <button type="submit" class="col-span-2 btn-primary p-2 rounded-lg"><i data-lucide="plus"></i> Adicionar Compra</button>
+                    </form>
+                </div>
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Últimas Transações</h2>
+                        <select id="transaction-filter" class="input-field text-sm p-1 rounded">
+                            <option>Todas</option>
+                        </select>
+                    </div>
+                    <ul id="transaction-list" class="space-y-2 max-h-96 overflow-y-auto"></ul>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                 <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Insights (Mês Corrente)</h2>
+                    <div class="space-y-3 text-sm">
+                        <div class="p-2 bg-gray-900 rounded-md"><p class="text-gray-400">Gasto médio diário</p><p id="insight-avg-daily" class="font-bold text-lg">R$ 0,00</p></div>
+                        <div class="p-2 bg-gray-900 rounded-md"><p class="text-gray-400">Projeção de gastos no mês</p><p id="insight-monthly-projection" class="font-bold text-lg">R$ 0,00</p></div>
+                        <div class="p-2 bg-gray-900 rounded-md"><p class="text-gray-400">Balanço Anual (até agora)</p><p id="insight-annual-balance" class="font-bold text-lg text-green-400">R$ 0,00</p></div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Histórico & Análise</h2>
+                    <div class="flex gap-2 mb-4">
+                        <select id="history-year-filter" class="input-field w-full p-2 rounded text-sm"></select>
+                        <select id="history-month-filter" class="input-field w-full p-2 rounded text-sm"></select>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div class="p-2 bg-gray-900 rounded-md flex justify-between items-center"><p class="text-gray-400">Renda no Período</p><p id="history-income" class="font-bold text-lg text-green-400">R$ 0,00</p></div>
+                        <div class="p-2 bg-gray-900 rounded-md flex justify-between items-center"><p class="text-gray-400">Despesa no Período</p><p id="history-expense" class="font-bold text-lg text-red-400">R$ 0,00</p></div>
+                        <div class="p-2 bg-gray-900 rounded-md flex justify-between items-center"><p class="text-gray-400">Saldo do Período</p><p id="history-balance" class="font-bold text-lg">R$ 0,00</p></div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Ferramentas & Configurações</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="currency-selector" class="block mb-2 text-sm font-medium text-gray-300">Moeda de Exibição</label>
+                            <select id="currency-selector" class="input-field w-full p-2 rounded text-sm"></select>
+                            <p class="text-xs text-gray-500 mt-1">Valores são sempre salvos em BRL.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                             <button id="export-data-btn" class="w-full btn-secondary font-medium rounded-lg text-sm px-5 py-2.5">Exportar Backup</button>
+                             <button id="import-data-btn" class="w-full btn-secondary font-medium rounded-lg text-sm px-5 py-2.5">Importar Backup</button>
+                             <input type="file" id="import-file-input" class="hidden" accept=".json">
+                        </div>
+                        <button id="reset-data-btn" class="w-full btn-danger font-medium rounded-lg text-sm px-5 py-2.5">Resetar Todos os Dados</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="payment-modal" class="fixed inset-0 modal-bg hidden items-center justify-center z-50">
+        <div class="card w-11/12 md:w-1/3 p-6">
+            <h2 id="payment-modal-title" class="text-xl font-semibold mb-4">Fazer Pagamento</h2>
+            <p id="payment-modal-info" class="mb-4 text-sm"></p>
+            <input type="number" id="payment-amount" class="input-field w-full p-2 rounded mb-4" placeholder="Valor a pagar" step="0.01">
+            <div class="flex gap-4">
+                <button id="confirm-payment-btn" class="w-full btn-primary p-2 rounded-lg">Confirmar</button>
+                <button id="cancel-payment-btn" class="w-full bg-gray-600 hover:bg-gray-700 p-2 rounded-lg">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="reset-confirm-modal" class="fixed inset-0 modal-bg hidden items-center justify-center z-50">
+        <div class="card w-11/12 md:w-1/3 p-6 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-900">
+                <i data-lucide="alert-triangle" class="h-6 w-6 text-red-400"></i>
+            </div>
+            <h2 class="text-xl font-semibold my-4">Apagar Todos os Dados?</h2>
+            <p class="mb-6 text-sm text-gray-400">Esta ação é irreversível e apagará todas as transações, dívidas, compras e custos fixos. Suas configurações de moeda serão mantidas.</p>
+            <div class="flex gap-4">
+                <button id="confirm-reset-btn" class="w-full btn-danger p-2 rounded-lg">Sim, Apagar Tudo</button>
+                <button id="cancel-reset-btn" class="w-full bg-gray-600 hover:bg-gray-700 p-2 rounded-lg">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
